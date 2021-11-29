@@ -2,15 +2,19 @@ import { useState } from 'react';
 import { supabase } from '../lib/initSupabase';
 
 export default function Login() {
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
 
   const handleLogin = async (email) => {
     try {
+      setLoading(true);
       const { error } = await supabase.auth.signIn({ email });
       if (error) throw error;
       alert('Check your email for the login link!');
     } catch (error) {
       alert(error.error_description || error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -29,9 +33,10 @@ export default function Login() {
           e.preventDefault();
           handleLogin(email);
         }}
+        disabled={loading}
         className='w-full mt-4 p-2 pl-5 pr-5 bg-blue-500 text-gray-100 text-lg rounded-lg focus:border-4 border-blue-300'
       >
-        <span>Send magic link</span>
+        <span>{loading ? 'Sending the link' : 'Send magic link'}</span>
       </button>
     </div>
   );
