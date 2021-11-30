@@ -18,6 +18,20 @@ export default function Login() {
     }
   };
 
+  const handleGitHubLogin = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signIn({
+        provider: 'github',
+      });
+      if (error) throw error;
+    } catch (error) {
+      alert(error.error_description || error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className='container mx-auto grid place-content-center min-h-screen'>
       <p className='mb-4'>Sign in via magic link with your email below</p>
@@ -37,6 +51,14 @@ export default function Login() {
         className='w-full mt-4 p-2 pl-5 pr-5 bg-blue-500 text-gray-100 text-lg rounded-lg focus:border-4 border-blue-300'
       >
         <span>{loading ? 'Sending the link' : 'Send magic link'}</span>
+      </button>
+      <p className='mt-4 text-center'>or</p>
+      <button
+        className='mt-4 p-2 pl-5 pr-5 bg-blue-500 text-gray-100 text-lg rounded-lg focus:border-4 border-blue-300'
+        onClick={() => handleGitHubLogin()}
+        disabled={loading}
+      >
+        {loading ? 'Logging in' : 'Login with GitHub'}
       </button>
     </div>
   );
